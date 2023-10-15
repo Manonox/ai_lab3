@@ -144,7 +144,7 @@ impl Field {
         moves
     }
 
-    pub fn eval_heuristic_for_move(&self, m: Move) -> i32 {
+    pub fn eval_heuristic_for_move(&self, m: Move) -> f32 {
         let mut f = self.clone();
         let _ = f.make_move(m);
         return f.eval_heuristic();
@@ -171,8 +171,29 @@ impl Field {
         self.get_pieces().len() as u8
     }
 
-    pub fn eval_heuristic(&self) -> i32 {
-        (self.count_pieces() as i32) - 1 //+ (self.available_moves().len() as i32)
+    pub fn eval_heuristic(&self) -> f32 {
+        let base = (self.count_pieces() as f32) - 1.0;
+        let available_moves = self.available_moves().len() as f32;
+        let manhattan_distance_sum = self.manhattan_distance_sum() as f32;
+        //base * (1.0 + manhattan_distance_sum * 10.0)
+        base + manhattan_distance_sum - available_moves
+    }
+
+    pub fn manhattan_distance_sum(&self) -> i32 {
+        let mut sum = 0;
+        let center_position = Position { x: 3, y: 3 };
+        (0_i8..7_i8).for_each(|x| {
+            (0_i8..7_i8).for_each(|y| {
+                let position = Position { x, y };
+                let cell = self.get_cell(position);
+                let Some(cell) = cell
+                else { return };
+                if cell != Cell::Piece { return }
+                let manhattan_distance = (center_position.x - position.x).abs() + (center_position.y - position.y).abs();
+                sum += manhattan_distance as i32;
+            });
+        });
+        sum
     }
 
     pub fn display(&self) {

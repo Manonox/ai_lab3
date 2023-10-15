@@ -9,9 +9,9 @@ struct AStarNode {
     id: usize,
     parent_id: usize,
     field: Field,
-    heu_g: i32,
-    heu_h: i32,
-    heu: i32,
+    heu_g: f32,
+    heu_h: f32,
+    heu: f32,
 }
 
 
@@ -21,9 +21,9 @@ impl AStarNode {
             id: usize::MAX,
             parent_id: usize::MAX,
             field: Field::new(),
-            heu_g: 0,
-            heu_h: 0,
-            heu: 0,
+            heu_g: 0.0,
+            heu_h: 0.0,
+            heu: 0.0,
         }
     }
 
@@ -32,9 +32,9 @@ impl AStarNode {
             id: usize::MAX,
             parent_id: usize::MAX,
             field,
-            heu_g: 0,
-            heu_h: 0,
-            heu: 0,
+            heu_g: 0.0,
+            heu_h: 0.0,
+            heu: 0.0,
         }
     }
 }
@@ -98,7 +98,7 @@ impl AStar {
         let mut node = AStarNode::new();
         node.field = start.clone();
         node.heu_h = start.eval_heuristic();
-        node.heu_g = 0;
+        node.heu_g = 0.0;
         node.heu = node.heu_h;
         node.id = astar.nodes.len();
         node.parent_id = astar.nodes.len();
@@ -139,7 +139,7 @@ impl AStar {
             if !current_node.field.is_valid_move(m) { return }
 
             let mut field: Field = current_node.field.clone();
-            let heu_g = current_node.heu_g + 1;
+            let heu_g = current_node.heu_g + 1.0;
             let heu_h = field.eval_heuristic_for_move(m);
             let heu = heu_g + heu_h;
             field.make_move(m);

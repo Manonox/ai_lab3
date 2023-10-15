@@ -25,7 +25,7 @@ fn main() {
     
     match result {
         Ok(_) => {
-            println!("Solved!");
+            println!("Solved! (steps: {steps})");
         },
 
         Err(()) => {
